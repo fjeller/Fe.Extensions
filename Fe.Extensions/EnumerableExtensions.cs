@@ -28,11 +28,31 @@ namespace Fe.Extensions
 		/// ---------------------------------------------------------------------------------------------------------------------------
 		public static IEnumerable<T> WhereNotNull<T>( this IEnumerable<T?> source ) where T : class
 		{
-			var result = source is null
-				? throw new ArgumentNullException( nameof( source ) )
-				: source.Where( item => item is not null ).Select( item => item! );
+			ArgumentNullException.ThrowIfNull( source );
+
+			IEnumerable<T> result = source.Where( item => item is not null ).Select( item => item! );
 
 			return result;
+		}
+
+		/// ---------------------------------------------------------------------------------------------------------------------------
+		/// <summary>
+		/// Executes the specified action on each element of the <see cref="IEnumerable{T}"/> sequence.
+		/// </summary>
+		/// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
+		/// <param name="source">The sequence whose elements the action will be performed on.</param>
+		/// <param name="action">The <see cref="Action{T}"/> delegate to perform on each element of the sequence.</param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="source"/> or <paramref name="action"/> is <c>null</c>.
+		/// </exception>
+		/// ---------------------------------------------------------------------------------------------------------------------------
+		public static void ForEach<T>( this IEnumerable<T> source, Action<T> action )
+		{
+			ArgumentNullException.ThrowIfNull( source );
+			ArgumentNullException.ThrowIfNull( action );
+
+			source.ToList().ForEach( action );
+
 		}
 	}
 }
